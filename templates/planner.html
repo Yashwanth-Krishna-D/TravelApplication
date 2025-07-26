@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-gradient mb-3">AI-Powered Trip Planner</h2>
+        <p class="lead">Tell us about your dream trip and we'll create a personalized itinerary just for you.</p>
+    </div>
+</div>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-custom mb-4">
+                <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }}"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-custom">
+            <div class="card-body">
+                <form method="post" id="plannerForm">
+                    <!-- Destination -->
+                    <div class="form-group mb-4">
+                        <label for="destination" class="form-label">
+                            <i class="fas fa-map-marker-alt text-primary"></i> Destination *
+                        </label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="destination" 
+                               name="destination" 
+                               value="{{ request.args.get('destination', '') }}"
+                               placeholder="e.g., Japan, Paris, New York, or Asia"
+                               required>
+                        <small class="form-text text-muted">Enter a specific city, country, or region</small>
+                    </div>
+
+                    <!-- Travel Dates -->
+                    <div class="form-group mb-4">
+                        <label for="dates" class="form-label">
+                            <i class="fas fa-calendar-alt text-primary"></i> Travel Dates *
+                        </label>
+                        <input type="text" 
+                               class="form-control" 
+                               id="dates" 
+                               name="dates" 
+                               placeholder="e.g., 2025-08-01 to 2025-08-15"
+                               required>
+                        <small class="form-text text-muted">Enter your travel dates in YYYY-MM-DD format</small>
+                    </div>
+
+                    <!-- Duration -->
+                    <div class="form-group mb-4">
+                        <label for="duration" class="form-label">
+                            <i class="fas fa-clock text-primary"></i> Trip Duration (Days) *
+                        </label>
+                        <select class="form-control" id="duration" name="duration" required>
+                            <option value="">Select duration</option>
+                            <option value="3">3 days</option>
+                            <option value="5">5 days</option>
+                            <option value="7" selected>7 days</option>
+                            <option value="10">10 days</option>
+                            <option value="14">14 days</option>
+                            <option value="21">21 days</option>
+                            <option value="30">30 days</option>
+                        </select>
+                    </div>
+
+                    <!-- Budget -->
+                    <div class="form-group mb-4">
+                        <label for="budget" class="form-label">
+                            <i class="fas fa-dollar-sign text-primary"></i> Total Budget (USD) *
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text">$</span>
+                            <input type="number" 
+                                   class="form-control" 
+                                   id="budget" 
+                                   name="budget" 
+                                   placeholder="e.g., 2000"
+                                   min="100"
+                                   required>
+                        </div>
+                        <small class="form-text text-muted">Enter your total budget for the entire trip</small>
+                    </div>
+
+                    <!-- Travel Style -->
+                    <div class="form-group mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-user-friends text-primary"></i> Travel Style *
+                        </label>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="travel_style" id="adventure" value="adventure">
+                                    <label class="form-check-label" for="adventure">
+                                        <i class="fas fa-mountain text-success"></i> Adventure Seeker
+                                    </label>
+                                    <small class="form-text text-muted d-block">Hiking, sports, outdoor activities</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="travel_style" id="culture" value="culture" checked>
+                                    <label class="form-check-label" for="culture">
+                                        <i class="fas fa-landmark text-primary"></i> Cultural Explorer
+                                    </label>
+                                    <small class="form-text text-muted d-block">Museums, history, local culture</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="travel_style" id="luxury" value="luxury">
+                                    <label class="form-check-label" for="luxury">
+                                        <i class="fas fa-crown text-warning"></i> Luxury Traveler
+                                    </label>
+                                    <small class="form-text text-muted d-block">Premium experiences, fine dining</small>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="travel_style" id="budget" value="budget">
+                                    <label class="form-check-label" for="budget">
+                                        <i class="fas fa-piggy-bank text-info"></i> Budget Traveler
+                                    </label>
+                                    <small class="form-text text-muted d-block">Cost-effective, local experiences</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Preferences -->
+                    <div class="form-group mb-4">
+                        <label class="form-label">
+                            <i class="fas fa-heart text-primary"></i> Additional Preferences
+                        </label>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="foodie" name="preferences" value="foodie">
+                                    <label class="form-check-label" for="foodie">
+                                        <i class="fas fa-utensils text-success"></i> Food & Dining
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="shopping" name="preferences" value="shopping">
+                                    <label class="form-check-label" for="shopping">
+                                        <i class="fas fa-shopping-bag text-primary"></i> Shopping
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="nightlife" name="preferences" value="nightlife">
+                                    <label class="form-check-label" for="nightlife">
+                                        <i class="fas fa-moon text-dark"></i> Nightlife
+                                    </label>
+                                </div>
+                                <div class="form-check mb-2">
+                                    <input class="form-check-input" type="checkbox" id="relaxation" name="preferences" value="relaxation">
+                                    <label class="form-check-label" for="relaxation">
+                                        <i class="fas fa-spa text-info"></i> Relaxation
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-custom btn-lg w-100" id="submitBtn">
+                            <i class="fas fa-magic"></i> Generate My Itinerary
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <!-- How It Works -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-cogs"></i> How It Works
+                </h5>
+                <div class="mb-3">
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="badge bg-primary me-2">1</span>
+                        <span>Fill in your travel details</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="badge bg-primary me-2">2</span>
+                        <span>Choose your travel style</span>
+                    </div>
+                    <div class="d-flex align-items-center mb-2">
+                        <span class="badge bg-primary me-2">3</span>
+                        <span>Get personalized itinerary</span>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <span class="badge bg-primary me-2">4</span>
+                        <span>Save and share your plan</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Travel Tips -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-lightbulb"></i> Planning Tips
+                </h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Book flights 3-6 months in advance
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Research visa requirements early
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Consider travel insurance
+                    </li>
+                    <li class="mb-2">
+                        <i class="fas fa-check text-success me-2"></i>
+                        Pack light and smart
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Popular Destinations -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-star"></i> Popular Destinations
+                </h5>
+                <div class="mb-2">
+                    <a href="{{ url_for('planner') }}?destination=Japan" class="btn btn-sm btn-outline-custom mb-1">Japan</a>
+                    <a href="{{ url_for('planner') }}?destination=Paris" class="btn btn-sm btn-outline-custom mb-1">Paris</a>
+                    <a href="{{ url_for('planner') }}?destination=New York" class="btn btn-sm btn-outline-custom mb-1">New York</a>
+                    <a href="{{ url_for('planner') }}?destination=Thailand" class="btn btn-sm btn-outline-custom mb-1">Thailand</a>
+                    <a href="{{ url_for('planner') }}?destination=Italy" class="btn btn-sm btn-outline-custom mb-1">Italy</a>
+                    <a href="{{ url_for('planner') }}?destination=Australia" class="btn btn-sm btn-outline-custom mb-1">Australia</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Modal -->
+<div class="modal fade" id="loadingModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-4">
+                <div class="loading mb-3"></div>
+                <h5>Generating Your Itinerary...</h5>
+                <p class="text-muted">Our AI is creating the perfect travel plan for you!</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<script>
+document.getElementById('plannerForm').addEventListener('submit', function(e) {
+    // Show loading modal
+    var loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
+    loadingModal.show();
+    
+    // Hide modal after 2 seconds (simulate processing)
+    setTimeout(function() {
+        loadingModal.hide();
+    }, 2000);
+});
+</script>
+{% endblock %}

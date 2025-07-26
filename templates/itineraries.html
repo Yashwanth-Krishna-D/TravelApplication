@@ -1,0 +1,280 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-gradient mb-3">
+            <i class="fas fa-save"></i> Your Saved Itineraries
+        </h2>
+        <p class="lead">All your personalized travel plans in one place.</p>
+    </div>
+</div>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-custom mb-4">
+                <i class="fas fa-{{ 'exclamation-triangle' if category == 'error' else 'check-circle' }}"></i>
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% if itineraries %}
+<!-- Statistics -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="stats-card text-center">
+            <div class="stats-number">{{ itineraries|length }}</div>
+            <div class="stats-label">Total Itineraries</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card text-center">
+            <div class="stats-number">
+                {% set total_days = 0 %}
+                {% for itinerary in itineraries %}
+                    {% set total_days = total_days + itinerary.duration|int %}
+                {% endfor %}
+                {{ total_days }}
+            </div>
+            <div class="stats-label">Total Days</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card text-center">
+            <div class="stats-number">
+                {% set total_budget = 0 %}
+                {% for itinerary in itineraries %}
+                    {% set total_budget = total_budget + itinerary.budget|int %}
+                {% endfor %}
+                ${{ total_budget }}
+            </div>
+            <div class="stats-label">Total Budget</div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="stats-card text-center">
+            <div class="stats-number">
+                {% set unique_destinations = itineraries|map(attribute='destination')|unique|list|length %}
+                {{ unique_destinations }}
+            </div>
+            <div class="stats-label">Unique Destinations</div>
+        </div>
+    </div>
+</div>
+
+<!-- Itineraries Grid -->
+<div class="row">
+    {% for itinerary in itineraries %}
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-custom hover-lift">
+            <div class="card-header bg-gradient text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-map-marker-alt"></i> {{ itinerary.destination }}
+                    </h5>
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{{ url_for('view_itinerary', itinerary_id=itinerary._id) }}">
+                                <i class="fas fa-eye"></i> View Details
+                            </a></li>
+                            <li><a class="dropdown-item" href="{{ url_for('planner') }}?destination={{ itinerary.destination }}">
+                                <i class="fas fa-edit"></i> Edit
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="POST" action="{{ url_for('delete_itinerary', itinerary_id=itinerary._id) }}" class="d-inline">
+                                    <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Are you sure you want to delete this itinerary?')">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-calendar-alt text-primary me-2"></i>
+                            <div>
+                                <small class="text-muted">Travel Dates</small><br>
+                                <strong>{{ itinerary.dates }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-clock text-primary me-2"></i>
+                            <div>
+                                <small class="text-muted">Duration</small><br>
+                                <strong>{{ itinerary.duration }} days</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-dollar-sign text-primary me-2"></i>
+                            <div>
+                                <small class="text-muted">Budget</small><br>
+                                <strong>${{ itinerary.budget }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="fas fa-user-friends text-primary me-2"></i>
+                            <div>
+                                <small class="text-muted">Style</small><br>
+                                <strong>{{ itinerary.travel_style|title }}</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <span class="badge bg-success me-1">{{ itinerary.itinerary.style }}</span>
+                    <span class="badge bg-info">{{ itinerary.itinerary.daily_budget }} daily</span>
+                </div>
+                
+                <p class="card-text text-muted">
+                    {{ itinerary.itinerary.destination }} - {{ itinerary.itinerary.duration }} adventure with {{ itinerary.itinerary.style }} experience
+                </p>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{{ url_for('view_itinerary', itinerary_id=itinerary._id) }}" class="btn btn-custom">
+                        <i class="fas fa-eye"></i> View Full Itinerary
+                    </a>
+                    <small class="text-muted">
+                        Created {{ itinerary.created_at.strftime('%B %d, %Y') if itinerary.created_at else 'Recently' }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Export Options -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body text-center">
+                <h5 class="card-title">
+                    <i class="fas fa-download"></i> Export Your Itineraries
+                </h5>
+                <p class="card-text">Download your travel plans in various formats for offline access.</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <button class="btn btn-outline-custom" onclick="exportToPDF()">
+                        <i class="fas fa-file-pdf"></i> Export to PDF
+                    </button>
+                    <button class="btn btn-outline-custom" onclick="exportToCSV()">
+                        <i class="fas fa-file-csv"></i> Export to CSV
+                    </button>
+                    <button class="btn btn-outline-custom" onclick="printAll()">
+                        <i class="fas fa-print"></i> Print All
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- Empty State -->
+<div class="row">
+    <div class="col-12">
+        <div class="text-center py-5">
+            <i class="fas fa-suitcase fa-4x text-muted mb-4"></i>
+            <h3 class="text-muted mb-3">No saved itineraries yet</h3>
+            <p class="text-muted mb-4">Start planning your next adventure to see your personalized itineraries here.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{{ url_for('planner') }}" class="btn btn-custom btn-lg">
+                    <i class="fas fa-magic"></i> Create Your First Itinerary
+                </a>
+                <a href="{{ url_for('xplore') }}" class="btn btn-outline-custom btn-lg">
+                    <i class="fas fa-globe"></i> Explore Destinations
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Start Guide -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-rocket"></i> Quick Start Guide
+                </h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="text-center mb-3">
+                            <i class="fas fa-search fa-2x text-primary mb-2"></i>
+                            <h6>1. Choose Destination</h6>
+                            <p class="text-muted">Browse destinations or search for your dream location</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center mb-3">
+                            <i class="fas fa-edit fa-2x text-primary mb-2"></i>
+                            <h6>2. Plan Your Trip</h6>
+                            <p class="text-muted">Fill in your preferences and travel style</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="text-center mb-3">
+                            <i class="fas fa-save fa-2x text-primary mb-2"></i>
+                            <h6>3. Save & Share</h6>
+                            <p class="text-muted">Save your itinerary and share with friends</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+.hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.bg-gradient {
+    background: var(--gradient-primary);
+}
+</style>
+
+<script>
+function exportToPDF() {
+    alert('PDF export functionality would be implemented here');
+}
+
+function exportToCSV() {
+    alert('CSV export functionality would be implemented here');
+}
+
+function printAll() {
+    window.print();
+}
+</script>
+{% endblock %} 

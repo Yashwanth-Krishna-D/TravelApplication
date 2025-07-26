@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12 text-center">
+        <h2 class="text-gradient mb-3">About Travel XP</h2>
+        <p class="lead">Revolutionizing travel planning with AI-powered innovation. Our mission: to democratize travel planning by making personalized, intelligent trip planning accessible to everyone.</p>
+        <p>We combine advanced AI tech with travel expertise. Explore, connect, plan sustainably, experience deeply — that's Travel XP.</p>
+    </div>
+</div>
+
+<!-- Team Section -->
+{% if team_members %}
+<div class="row mb-5">
+    <div class="col-12 text-center mb-4">
+        <h3 class="text-gradient">Meet Our Team</h3>
+    </div>
+    {% for member in team_members %}
+    <div class="col-md-6 col-lg-3 mb-4">
+        <div class="card shadow-custom h-100">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-user-circle fa-3x text-primary"></i>
+                </div>
+                <h5 class="card-title mb-1">{{ member.name }}</h5>
+                <p class="text-muted mb-1">{{ member.role }}</p>
+                <p class="small mb-2">{{ member.bio }}</p>
+                <span class="badge bg-info">{{ member.expertise }}</span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Company Values -->
+<div class="row mb-5">
+    <div class="col-12 text-center mb-4">
+        <h3 class="text-gradient">Our Values</h3>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="feature-card shadow-hover">
+            <h5><i class="fas fa-lightbulb text-primary"></i> Innovation</h5>
+            <p>We leverage the latest AI technology to make travel planning smarter and easier for everyone.</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="feature-card shadow-hover">
+            <h5><i class="fas fa-users text-success"></i> Community</h5>
+            <p>We believe in connecting travelers and sharing authentic experiences across the globe.</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="feature-card shadow-hover">
+            <h5><i class="fas fa-leaf text-warning"></i> Sustainability</h5>
+            <p>We promote responsible travel and encourage sustainable choices for a better world.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="row mb-5">
+    <div class="col-12 text-center">
+        <div class="card-custom">
+            <h4 class="mb-3">Ready to plan your next adventure?</h4>
+            <a href="{{ url_for('planner') }}" class="btn btn-custom btn-lg">
+                <i class="fas fa-magic"></i> Start Planning
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="text-center py-5">
+    <h1 class="display-1 text-gradient">404</h1>
+    <h2 class="mb-3">Page Not Found</h2>
+    <p class="lead mb-4">Sorry, the page you are looking for does not exist or has been moved.</p>
+    <a href="{{ url_for('home') }}" class="btn btn-custom btn-lg">
+        <i class="fas fa-home"></i> Go to Home
+    </a>
+    <a href="{{ url_for('xplore') }}" class="btn btn-outline-custom btn-lg ms-2">
+        <i class="fas fa-globe"></i> Explore Destinations
+    </a>
+</div>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %} 

@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="hero-section text-center py-5 gradient-bg fade-in">
+    <h1 class="display-4 gradient-text">Welcome to Travel XP</h1>
+    <p class="lead mb-4">Discover, plan, and experience the world with AI-powered travel assistance. From hidden gems to cultural insights, we've got your journey covered.</p>
+    <div class="hero-buttons">
+        <a href="{{ url_for('planner') }}" class="btn btn-custom me-3">Plan Your Trip</a>
+        <a href="{{ url_for('xplore') }}" class="btn btn-outline-custom">Explore Destinations</a>
+    </div>
+</div>
+
+<!-- Statistics Section -->
+<div class="row mb-5">
+    <div class="col-md-4">
+        <div class="stats-card fade-in">
+            <div class="stats-number">{{ stats.total_itineraries }}</div>
+            <div class="stats-label">Itineraries Created</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stats-card fade-in">
+            <div class="stats-number">{{ stats.total_users }}</div>
+            <div class="stats-label">Happy Travelers</div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="stats-card fade-in">
+            <div class="stats-number">{{ stats.destinations_covered }}</div>
+            <div class="stats-label">Destinations Covered</div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4 text-gradient">Why Choose Travel XP?</h2>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="feature-card shadow-hover">
+            <div class="text-center mb-3">
+                <i class="fas fa-route fa-3x text-primary"></i>
+            </div>
+            <h5>AI-Powered Planning</h5>
+            <p>Our intelligent system creates personalized itineraries based on your preferences, budget, and travel style.</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="feature-card shadow-hover">
+            <div class="text-center mb-3">
+                <i class="fas fa-globe-americas fa-3x text-primary"></i>
+            </div>
+            <h5>Global Destinations</h5>
+            <p>Explore destinations across all continents with detailed information about culture, attractions, and local insights.</p>
+        </div>
+    </div>
+    <div class="col-md-4 mb-4">
+        <div class="feature-card shadow-hover">
+            <div class="text-center mb-3">
+                <i class="fas fa-save fa-3x text-primary"></i>
+            </div>
+            <h5>Save & Share</h5>
+            <p>Save your itineraries, share them with friends, and access them anytime from your personal dashboard.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Popular Destinations -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4 text-gradient">Popular Destinations</h2>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="destination-card shadow-hover">
+            <h5>🌏 Asia</h5>
+            <p>From the ancient temples of Japan to the bustling streets of Bangkok, discover diverse cultures and traditions.</p>
+            <a href="{{ url_for('xplore') }}?search=asia" class="btn btn-sm btn-outline-custom">Explore Asia</a>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="destination-card shadow-hover">
+            <h5>🏛️ Europe</h5>
+            <p>Immerse yourself in rich history, stunning architecture, and world-class museums across European cities.</p>
+            <a href="{{ url_for('xplore') }}?search=europe" class="btn btn-sm btn-outline-custom">Explore Europe</a>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="destination-card shadow-hover">
+            <h5>🗽 North America</h5>
+            <p>Experience natural wonders, vibrant cities, and diverse landscapes from coast to coast.</p>
+            <a href="{{ url_for('xplore') }}?search=north america" class="btn btn-sm btn-outline-custom">Explore North America</a>
+        </div>
+    </div>
+    <div class="col-md-6 mb-4">
+        <div class="destination-card shadow-hover">
+            <h5>🌴 South America</h5>
+            <p>Adventure through the Amazon rainforest, ancient ruins, and vibrant cultures of South America.</p>
+            <a href="{{ url_for('xplore') }}?search=south america" class="btn btn-sm btn-outline-custom">Explore South America</a>
+        </div>
+    </div>
+</div>
+
+<!-- Travel Styles -->
+<div class="row mb-5">
+    <div class="col-12">
+        <h2 class="text-center mb-4 text-gradient">Find Your Travel Style</h2>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="feature-card shadow-hover">
+            <h5>🏃 Adventure Seeker</h5>
+            <p>Thrilling activities like hiking, rock climbing, and water sports for adrenaline junkies.</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="feature-card shadow-hover">
+            <h5>🏛️ Cultural Explorer</h5>
+            <p>Immerse yourself in local traditions, museums, and historical sites for authentic experiences.</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="feature-card shadow-hover">
+            <h5>💎 Luxury Traveler</h5>
+            <p>Premium experiences with fine dining, spa treatments, and exclusive accommodations.</p>
+        </div>
+    </div>
+    <div class="col-md-3 mb-4">
+        <div class="feature-card shadow-hover">
+            <h5>💰 Budget Traveler</h5>
+            <p>Smart travel options with hostels, local eateries, and free attractions for cost-conscious explorers.</p>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<div class="row">
+    <div class="col-12">
+        <div class="card-custom text-center">
+            <h3 class="mb-3">Ready to Start Your Journey?</h3>
+            <p class="mb-4">Join thousands of travelers who trust Travel XP for their adventure planning.</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="{{ url_for('planner') }}" class="btn btn-custom">Start Planning</a>
+                {% if not session.get("user") %}
+                <a href="{{ url_for('register') }}" class="btn btn-outline-custom">Sign Up Free</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

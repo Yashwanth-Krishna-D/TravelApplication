@@ -1,0 +1,221 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('xplore') }}">Destinations</a></li>
+                <li class="breadcrumb-item active">{{ destination.name }}</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-8">
+        <!-- Destination Header -->
+        <div class="card-custom mb-4">
+            <h1 class="gradient-text mb-3">{{ destination.name }}</h1>
+            <p class="lead mb-4">{{ destination.description }}</p>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-calendar-alt fa-2x text-primary me-3"></i>
+                        <div>
+                            <strong>Best Time to Visit</strong><br>
+                            <span class="text-light">{{ destination.best_time }}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="d-flex align-items-center mb-3">
+                        <i class="fas fa-dollar-sign fa-2x text-primary me-3"></i>
+                        <div>
+                            <strong>Budget Range</strong><br>
+                            <span class="text-light">{{ destination.budget_range }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Countries Section -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="mb-3">
+                    <i class="fas fa-flag"></i> Popular Countries
+                </h3>
+                <div class="row">
+                    {% for country in destination.countries %}
+                    <div class="col-md-6 col-lg-4 mb-3">
+                        <div class="d-flex align-items-center p-3 border rounded">
+                            <i class="fas fa-map-marker-alt text-primary me-2"></i>
+                            <span>{{ country }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Highlights Section -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="mb-3">
+                    <i class="fas fa-star"></i> Highlights & Attractions
+                </h3>
+                <div class="row">
+                    {% for highlight in destination.highlights %}
+                    <div class="col-md-6 mb-3">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-check-circle text-success me-2"></i>
+                            <span>{{ highlight }}</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Travel Tips -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="mb-3">
+                    <i class="fas fa-lightbulb"></i> Travel Tips
+                </h3>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-plane text-primary"></i> Getting There</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Major international airports available</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Visa requirements vary by country</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Book flights 3-6 months in advance</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h5><i class="fas fa-bed text-primary"></i> Accommodation</h5>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Wide range from budget to luxury</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Book popular areas early</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Consider local guesthouses</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <!-- Quick Actions -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-route"></i> Plan Your Trip
+                </h5>
+                <p class="card-text">Ready to explore {{ destination.name }}? Let us create a personalized itinerary for you.</p>
+                <a href="{{ url_for('planner') }}?destination={{ destination.name }}" class="btn btn-custom w-100 mb-2">
+                    <i class="fas fa-magic"></i> Generate Itinerary
+                </a>
+                <a href="{{ url_for('xplore') }}" class="btn btn-outline-custom w-100">
+                    <i class="fas fa-globe"></i> Explore More
+                </a>
+            </div>
+        </div>
+
+        <!-- Weather Info -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-cloud-sun"></i> Weather Guide
+                </h5>
+                <div class="mb-3">
+                    <strong>Best Time:</strong> {{ destination.best_time }}
+                </div>
+                <div class="mb-3">
+                    <strong>Climate:</strong> Varies by region and season
+                </div>
+                <div class="mb-3">
+                    <strong>Packing Tips:</strong>
+                    <ul class="list-unstyled mt-2">
+                        <li><i class="fas fa-tshirt text-primary me-1"></i> Comfortable walking shoes</li>
+                        <li><i class="fas fa-umbrella text-primary me-1"></i> Weather-appropriate clothing</li>
+                        <li><i class="fas fa-camera text-primary me-1"></i> Camera for memories</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Budget Breakdown -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-wallet"></i> Budget Breakdown
+                </h5>
+                <div class="mb-3">
+                    <strong>Range:</strong> {{ destination.budget_range }}
+                </div>
+                <div class="mb-3">
+                    <strong>Typical Costs:</strong>
+                    <ul class="list-unstyled mt-2">
+                        <li><i class="fas fa-hotel text-primary me-1"></i> Accommodation: $50-200/night</li>
+                        <li><i class="fas fa-utensils text-primary me-1"></i> Food: $20-50/day</li>
+                        <li><i class="fas fa-bus text-primary me-1"></i> Transportation: $10-30/day</li>
+                        <li><i class="fas fa-ticket-alt text-primary me-1"></i> Activities: $20-100/day</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Travel Styles -->
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-users"></i> Travel Styles
+                </h5>
+                <div class="mb-3">
+                    <span class="badge bg-primary me-1 mb-1">Adventure</span>
+                    <span class="badge bg-success me-1 mb-1">Culture</span>
+                    <span class="badge bg-warning me-1 mb-1">Luxury</span>
+                    <span class="badge bg-info me-1 mb-1">Budget</span>
+                </div>
+                <p class="card-text">Choose your travel style when planning your itinerary for the best experience.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Related Destinations -->
+<div class="row mt-5">
+    <div class="col-12">
+        <h3 class="text-gradient mb-4">Explore More Destinations</h3>
+        <div class="row">
+            <div class="col-md-4 mb-3">
+                <div class="destination-card shadow-hover">
+                    <h5>🌏 Asia</h5>
+                    <p>Diverse cultures, ancient traditions, and modern cities.</p>
+                    <a href="{{ url_for('destination_detail', continent='asia') }}" class="btn btn-sm btn-outline-custom">Learn More</a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="destination-card shadow-hover">
+                    <h5>🏛️ Europe</h5>
+                    <p>Rich history, art, architecture, and diverse cultures.</p>
+                    <a href="{{ url_for('destination_detail', continent='europe') }}" class="btn btn-sm btn-outline-custom">Learn More</a>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="destination-card shadow-hover">
+                    <h5>🗽 North America</h5>
+                    <p>Natural wonders, vibrant cities, and diverse landscapes.</p>
+                    <a href="{{ url_for('destination_detail', continent='north_america') }}" class="btn btn-sm btn-outline-custom">Learn More</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %} 

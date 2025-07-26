@@ -1,0 +1,178 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-gradient mb-3">
+            <i class="fas fa-user-circle"></i> Your Profile
+        </h2>
+    </div>
+</div>
+
+<!-- User Information -->
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="card shadow-custom">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-user text-primary"></i> Account Information
+                </h5>
+                <div class="mb-3">
+                    <strong>Username:</strong> {{ user.username }}
+                </div>
+                <div class="mb-3">
+                    <strong>Email:</strong> {{ user.email }}
+                </div>
+                <div class="mb-3">
+                    <strong>Member Since:</strong> 
+                    {% if user.created_at %}
+                        {{ user.created_at.strftime('%B %d, %Y') }}
+                    {% else %}
+                        Recently
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow-custom">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-chart-bar text-success"></i> Travel Statistics
+                </h5>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="text-center">
+                            <div class="stats-number">{{ itineraries|length }}</div>
+                            <div class="stats-label">Itineraries</div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="text-center">
+                            <div class="stats-number">
+                                {% set total_days = 0 %}
+                                {% for itinerary in itineraries %}
+                                    {% set total_days = total_days + itinerary.duration|int %}
+                                {% endfor %}
+                                {{ total_days }}
+                            </div>
+                            <div class="stats-label">Total Days</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Itineraries -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h3 class="text-gradient mb-3">
+            <i class="fas fa-suitcase"></i> Your Travel Plans
+        </h3>
+    </div>
+</div>
+
+{% if itineraries %}
+<div class="row">
+    {% for itinerary in itineraries[:6] %}
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-custom">
+            <div class="card-header bg-gradient text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0">
+                        <i class="fas fa-map-marker-alt"></i> {{ itinerary.destination }}
+                    </h6>
+                    <small>{{ itinerary.duration }} days</small>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-6">
+                        <small class="text-muted">Travel Dates</small><br>
+                        <strong>{{ itinerary.dates }}</strong>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted">Budget</small><br>
+                        <strong>${{ itinerary.budget }}</strong>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <span class="badge bg-success me-1">{{ itinerary.itinerary.style }}</span>
+                    <span class="badge bg-info">{{ itinerary.travel_style|title }}</span>
+                </div>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{{ url_for('view_itinerary', itinerary_id=itinerary._id) }}" class="btn btn-sm btn-custom">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
+                    <small class="text-muted">
+                        Created {{ itinerary.created_at.strftime('%B %d, %Y') if itinerary.created_at else 'Recently' }}
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if itineraries|length > 6 %}
+<div class="row">
+    <div class="col-12 text-center">
+        <a href="{{ url_for('itineraries') }}" class="btn btn-outline-custom">
+            <i class="fas fa-list"></i> View All Itineraries
+        </a>
+    </div>
+</div>
+{% endif %}
+
+{% else %}
+<div class="row">
+    <div class="col-12">
+        <div class="text-center py-5">
+            <i class="fas fa-suitcase fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted mb-3">No itineraries yet</h4>
+            <p class="text-muted mb-4">Start planning your next adventure to see your travel plans here.</p>
+            <a href="{{ url_for('planner') }}" class="btn btn-custom">
+                <i class="fas fa-magic"></i> Create Your First Itinerary
+            </a>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Quick Actions -->
+<div class="row mt-5">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-cogs"></i> Quick Actions
+                </h5>
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('planner') }}" class="btn btn-outline-custom w-100">
+                            <i class="fas fa-plus"></i> Plan New Trip
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('xplore') }}" class="btn btn-outline-custom w-100">
+                            <i class="fas fa-globe"></i> Explore Destinations
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{{ url_for('itineraries') }}" class="btn btn-outline-custom w-100">
+                            <i class="fas fa-save"></i> View All Itineraries
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %} 

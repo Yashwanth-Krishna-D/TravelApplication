@@ -1,0 +1,298 @@
+{% extends "base.html" %}
+{% block content %}
+{% if itinerary %}
+<!-- Itinerary Header -->
+<div class="row mb-4">
+    <div class="col-12">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="{{ url_for('planner') }}">Planner</a></li>
+                <li class="breadcrumb-item active">Your Itinerary</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!-- Success Message -->
+<div class="alert alert-success alert-custom mb-4">
+    <i class="fas fa-check-circle"></i>
+    <strong>Itinerary Generated Successfully!</strong> Your personalized travel plan is ready.
+</div>
+
+<!-- Itinerary Overview -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card-custom">
+            <div class="row">
+                <div class="col-md-8">
+                    <h1 class="gradient-text mb-3">{{ itinerary.itinerary.destination }}</h1>
+                    <p class="lead mb-4">Your personalized {{ itinerary.itinerary.style }} experience</p>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-calendar-alt fa-2x text-primary me-3"></i>
+                                <div>
+                                    <strong>Travel Dates</strong><br>
+                                    <span class="text-light">{{ itinerary.dates }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-clock fa-2x text-primary me-3"></i>
+                                <div>
+                                    <strong>Duration</strong><br>
+                                    <span class="text-light">{{ itinerary.itinerary.duration }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-dollar-sign fa-2x text-primary me-3"></i>
+                                <div>
+                                    <strong>Total Budget</strong><br>
+                                    <span class="text-light">${{ itinerary.budget }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center mb-3">
+                                <i class="fas fa-wallet fa-2x text-primary me-3"></i>
+                                <div>
+                                    <strong>Daily Budget</strong><br>
+                                    <span class="text-light">{{ itinerary.itinerary.daily_budget }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-{{ 'mountain' if itinerary.travel_style == 'adventure' else 'landmark' if itinerary.travel_style == 'culture' else 'crown' if itinerary.travel_style == 'luxury' else 'piggy-bank' }} fa-4x text-light"></i>
+                    </div>
+                    <h5 class="text-light">{{ itinerary.itinerary.style }}</h5>
+                    <p class="text-light">Travel Style</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Day-by-Day Itinerary -->
+<div class="row">
+    <div class="col-12">
+        <h3 class="text-gradient mb-4">
+            <i class="fas fa-calendar-check"></i> Your Daily Schedule
+        </h3>
+    </div>
+</div>
+
+{% for day in itinerary.itinerary.days %}
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card shadow-custom">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-sun"></i> Day {{ day.day }} - {{ itinerary.itinerary.destination }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="itinerary-time-block">
+                            <h6 class="text-primary">
+                                <i class="fas fa-sunrise"></i> Morning
+                            </h6>
+                            <p class="mb-0">{{ day.morning }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="itinerary-time-block">
+                            <h6 class="text-primary">
+                                <i class="fas fa-sun"></i> Afternoon
+                            </h6>
+                            <p class="mb-0">{{ day.afternoon }}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="itinerary-time-block">
+                            <h6 class="text-primary">
+                                <i class="fas fa-moon"></i> Evening
+                            </h6>
+                            <p class="mb-0">{{ day.evening }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <hr>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-bed text-primary me-2"></i>
+                            <div>
+                                <strong>Accommodation:</strong><br>
+                                <span class="text-muted">{{ day.accommodation }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-bus text-primary me-2"></i>
+                            <div>
+                                <strong>Transportation:</strong><br>
+                                <span class="text-muted">{{ day.transport }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Travel Tips -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-lightbulb text-warning"></i> Travel Tips for {{ itinerary.itinerary.destination }}
+                </h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-plane text-primary"></i> Before You Go</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Check visa requirements</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Book accommodations early</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Get travel insurance</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Download offline maps</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6><i class="fas fa-suitcase text-primary"></i> Packing Essentials</h6>
+                        <ul class="list-unstyled">
+                            <li><i class="fas fa-check text-success me-2"></i>Comfortable walking shoes</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Weather-appropriate clothing</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Universal power adapter</li>
+                            <li><i class="fas fa-check text-success me-2"></i>Camera and portable charger</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="row mb-4">
+    <div class="col-12 text-center">
+        <div class="d-flex justify-content-center gap-3">
+            <a href="{{ url_for('planner') }}" class="btn btn-custom">
+                <i class="fas fa-edit"></i> Edit Itinerary
+            </a>
+            <a href="{{ url_for('itineraries') }}" class="btn btn-outline-custom">
+                <i class="fas fa-save"></i> Save & View All
+            </a>
+            <button class="btn btn-outline-custom" onclick="window.print()">
+                <i class="fas fa-print"></i> Print Itinerary
+            </button>
+        </div>
+    </div>
+</div>
+
+{% else %}
+<!-- Saved Itineraries List -->
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-gradient mb-3">
+            <i class="fas fa-save"></i> Your Saved Itineraries
+        </h2>
+        <p class="lead">All your personalized travel plans in one place.</p>
+    </div>
+</div>
+
+{% if itineraries %}
+<div class="row">
+    {% for itinerary in itineraries %}
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-custom">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div>
+                        <h5 class="card-title">{{ itinerary.destination }}</h5>
+                        <p class="text-muted mb-2">{{ itinerary.dates }}</p>
+                    </div>
+                    <div class="text-end">
+                        <span class="badge bg-primary">{{ itinerary.duration }} days</span>
+                        <br>
+                        <small class="text-muted">${{ itinerary.budget }}</small>
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <span class="badge bg-success me-1">{{ itinerary.itinerary.style }}</span>
+                    <span class="badge bg-info">{{ itinerary.travel_style }}</span>
+                </div>
+                
+                <p class="card-text">{{ itinerary.itinerary.destination }} - {{ itinerary.itinerary.duration }} adventure</p>
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{{ url_for('view_itinerary', itinerary_id=itinerary._id) }}" class="btn btn-sm btn-custom">
+                        <i class="fas fa-eye"></i> View Details
+                    </a>
+                    <form method="POST" action="{{ url_for('delete_itinerary', itinerary_id=itinerary._id) }}" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Are you sure you want to delete this itinerary?')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="row">
+    <div class="col-12">
+        <div class="text-center py-5">
+            <i class="fas fa-suitcase fa-3x text-muted mb-3"></i>
+            <h4 class="text-muted">No saved itineraries yet</h4>
+            <p class="text-muted">Start planning your next adventure to see your itineraries here.</p>
+            <a href="{{ url_for('planner') }}" class="btn btn-custom">Create Your First Itinerary</a>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endif %}
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+.itinerary-time-block {
+    padding: 1rem;
+    border-left: 3px solid var(--primary-color);
+    background: #f8f9fa;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+}
+
+@media print {
+    .btn, .breadcrumb, .alert {
+        display: none !important;
+    }
+    
+    .card-custom {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .gradient-text {
+        color: black !important;
+    }
+}
+</style>
+{% endblock %}
